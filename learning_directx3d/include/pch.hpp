@@ -45,5 +45,8 @@
 #include <sstream>
 #include <exception>
 #include <string>
+#include <queue>
+#include <bitset>
 
 #include <Windows.h>
+#include <windowsx.h>

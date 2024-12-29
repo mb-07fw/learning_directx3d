@@ -1,6 +1,5 @@
 ﻿#include <pch.hpp>
-#include <CustomWindow.hpp>
-#include <CustomException.hpp>
+#include <App.hpp>
 
 /* Courtesy of ChiliTomatoNoodle's C++ 3D DirectX Tutorial (link -> https://www.youtube.com/playlist?list=PLqCJpWy5Fohd3S7ICFXwUomYW0Wv67pDD)
 *   
@@ -17,27 +16,7 @@ int CALLBACK WinMain(
     _In_ int nCmdShow                                       // Flag that specifies how the window should be displayed
 )
 {
-    try
-    {
-        CTM::CTMWindow window(
-            640,
-            480,
-            "directx_test",
-            "Direct3D Engine"
-        );
+    CTM::CTMApp app;
 
-        return window.MessageLoop();
-    }
-    catch (const CTM::CTMException& ex)
-    {
-        MessageBox(nullptr, ex.what(), ex.GetType(), MB_OK | MB_ICONERROR);
-    }
-    catch (const std::exception& ex)
-    {
-        MessageBox(nullptr, ex.what(), "Standard exception.", MB_OK | MB_ICONERROR);
-    }
-    catch (...)
-    {
-        MessageBox(nullptr, "No details available.", "Unknown Exception", MB_OK | MB_ICONERROR);
-    }
+    return app.Start();
 }

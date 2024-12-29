@@ -63,27 +63,6 @@ namespace CTM // (stands for custom)
         DestroyWindow(m_WndHandle);
 	}
 
-    int CTMWindow::MessageLoop() noexcept
-    {
-        // "Message Pump"
-        MSG msg;
-        BOOL result;
-
-        while ((result = GetMessage(&msg, nullptr, 0, 0)) > 0)
-        {
-            // Translate raw virtual-key messages into character messages.
-            TranslateMessage(&msg);
-
-            // Forward the message to the current window procedure.
-            DispatchMessage(&msg);
-        }
-
-        if (result == -1)
-            return result;
-        else
-            return msg.wParam;
-    }
-
     #pragma region Getters
 	const char* CTMWindow::GetWndClass() noexcept
 	{
@@ -144,7 +123,25 @@ namespace CTM // (stands for custom)
             PostQuitMessage(69);
             return 69;
         case WM_KILLFOCUS:
-            // clear keyboard.
+            //m_Keyboard.ResetKeyStates();
+            break;
+        case WM_MOUSEMOVE:
+            /*m_Mouse.SetCurrentPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            SetWindowText(m_WndHandle, ("Mouse Pos : " + m_Mouse.GetPosAsStr()).c_str());*/
+            break;
+        case WM_SYSKEYDOWN:
+        case WM_KEYDOWN:
+            /*if (!(lParam & 0x40000000) || m_Keyboard.IsAutoRepeatEnabled())
+                m_Keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));*/
+            break;
+        case WM_SYSKEYUP:
+        case WM_KEYUP:
+            //m_Keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
+            break;
+        case WM_CHAR:
+            /*if (!(lParam & 0x40000000) || m_Keyboard.IsAutoRepeatEnabled())
+                m_Keyboard.OnChar(wParam);
+            SetWindowText(m_WndHandle, m_Keyboard.GetCharBuffer().c_str());*/
             break;
         }
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <pch.hpp>
+#include <CustomKeyboard.hpp>
+#include <CustomMouse.hpp>
 
 namespace CTM // (stands for custom)
 {
@@ -14,8 +16,6 @@ namespace CTM // (stands for custom)
 		CTMWindow& operator=(const CTMWindow&) = delete;
 		CTMWindow& operator=(CTMWindow&&) = delete;
 	public:
-		// Loops through message queue until a closure is triggered. Returns value of closure.
-		[[nodiscard]] int MessageLoop() noexcept;
 		[[nodiscard]] const char* GetWndClass() noexcept;
 		[[nodiscard]] const char* GetWndTitle() noexcept;
 		[[nodiscard]] HINSTANCE GetWndInstance() noexcept;
@@ -29,5 +29,7 @@ namespace CTM // (stands for custom)
 		const char* m_WndTitle;
 		HINSTANCE m_WndInstance;
 		HWND m_WndHandle;
+		CTMKeyboard m_Keyboard;
+		CTMMouse m_Mouse;
 	};
 }

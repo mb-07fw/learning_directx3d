@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -171,9 +171,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\CustomMouse.cpp" />
     <ClCompile Include="src\CustomException.cpp" />
+    <ClCompile Include="src\CustomTimer.cpp" />
     <ClCompile Include="src\CustomWindow.cpp" />
-    <ClCompile Include="src\Keyboard.cpp" />
+    <ClCompile Include="src\CustomKeyboard.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -183,9 +186,12 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\App.hpp" />
     <ClInclude Include="include\CustomException.hpp" />
+    <ClInclude Include="include\CustomMouse.hpp" />
+    <ClInclude Include="include\CustomTimer.hpp" />
     <ClInclude Include="include\CustomWindow.hpp" />
-    <ClInclude Include="include\Keyboard.hpp" />
+    <ClInclude Include="include\CustomKeyboard.hpp" />
     <ClInclude Include="include\pch.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
