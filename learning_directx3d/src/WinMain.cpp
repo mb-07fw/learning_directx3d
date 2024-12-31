@@ -16,7 +16,24 @@ int CALLBACK WinMain(
     _In_ int nCmdShow                                       // Flag that specifies how the window should be displayed
 )
 {
-    CTM::CTMApp app;
+    try
+    {
+        CTM::CTMApp app;
 
-    return app.Start();
+        return (int)app.Start();
+    }
+    catch (const CTM::CTMException& ex)
+    {
+        MessageBox(nullptr, ex.what(), ex.GetType(), MB_OK | MB_ICONERROR);
+    }
+    catch (const std::exception& ex)
+    {
+        MessageBox(nullptr, ex.what(), "Standard exception.", MB_OK | MB_ICONERROR);
+    }
+    catch (...)
+    {
+        MessageBox(nullptr, "No details available.", "Unknown Exception", MB_OK | MB_ICONERROR);
+    }
+
+    return -1;
 }

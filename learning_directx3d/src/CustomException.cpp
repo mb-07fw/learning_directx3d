@@ -3,20 +3,29 @@
 
 namespace CTM // (stands for custom)
 {
-	#pragma region Exception
-	CTMException::CTMException(unsigned int line, const char* file)	noexcept
-		: m_Line(line), m_File(file)
+	#pragma region CTMException
+	CTMException::CTMException(unsigned int line, const char* file) noexcept
+		: m_Line(line), m_File(file) 
 	{
-
 	}
 
 	const char* CTMException::what() const noexcept
 	{
-		std::ostringstream oss;
-		oss << GetType() << '\n' << GetOriginString();
+		if (!m_DefinedWhat)
+		{
+			ClearStringBuffer();
 
-		m_WhatBuffer = oss.str();
+			DefineWhatMessage();
+
+			m_DefinedWhat = true;
+		}
+
 		return m_WhatBuffer.c_str();
+	}
+
+	const char* CTMException::GetFile() const noexcept
+	{
+		return m_File;
 	}
 
 	unsigned int CTMException::GetLine() const noexcept
@@ -24,78 +33,151 @@ namespace CTM // (stands for custom)
 		return m_Line;
 	}
 
-	const std::string& CTMException::GetFile() const noexcept
+	void CTMException::AppendOriginString() const noexcept
 	{
-		return m_File;
+		m_StringBuffer << "[File] " << m_File << '\n' << "[Line] " << m_Line;
 	}
 
-	std::string CTMException::GetOriginString() const noexcept
+	void CTMException::ClearStringBuffer() const noexcept
 	{
-		std::ostringstream oss;
-		oss << "[File] " << m_File << '\n' << "[Line] " << m_Line;
-
-		return oss.str();
-	}
-
-	const char* CTMException::GetType() const noexcept
-	{
-		return "CTMException";
+		m_StringBuffer.str("");
 	}
 	#pragma endregion
 
-	#pragma region WindowException
-	CTMWindowException::CTMWindowException(HRESULT result, unsigned int line, const char* file) noexcept
-		: m_HResult(result), CTMException(line, file)
-	{
-
-	}
-
-	const char* CTMWindowException::what() const noexcept
+	#pragma region CTMInfoException
+	CTMInfoException::CTMInfoException(unsigned int line, const char* file, const std::vector<std::string>& infoMessages) noexcept
+		: CTMException(line, file)
 	{
 		std::ostringstream oss;
-		oss << GetType() <<  '\n' << GetErrorString() << '\n' << GetOriginString();
-
-		m_WhatBuffer = oss.str();
-		return m_WhatBuffer.c_str();
+		for (const std::string& message : infoMessages)
+			oss << message << '\n';
+		
+		m_ErrorInfo = oss.str();
 	}
 
-	const char* CTMWindowException::GetType() const noexcept
+	const char* CTMInfoException::GetType() const noexcept
 	{
-		return "CTMWindowException";
+		return "CTMInfoException";
 	}
 
-	std::string CTMWindowException::GetErrorString() const noexcept
+	void CTMInfoException::DefineWhatMessage() const noexcept
 	{
-		std::ostringstream oss;
-		oss << "[Error : " << m_HResult << "] " << TranslateErrorCode(m_HResult);
+		m_StringBuffer << GetType() << '\n';
 
-		return oss.str();
+		AppendErrorInfo();
+		AppendOriginString();
+
+		m_WhatBuffer = m_StringBuffer.str();
 	}
 
-	HRESULT CTMWindowException::GetErrorCode() const noexcept
+	void CTMInfoException::AppendErrorInfo() const noexcept
+	{
+		m_StringBuffer << "[Debug Info] " << m_ErrorInfo;
+	}
+	#pragma endregion
+
+	#pragma region HResultException
+	CTMHResultException::CTMHResultException(unsigned int line, const char* file, HRESULT hResult) noexcept
+		: CTMException(line, file), m_HResult(hResult)
+	{
+	}
+
+	void CTMHResultException::DefineWhatMessage() const noexcept
+	{
+		m_StringBuffer << GetType() << '\n';
+
+		AppendErrorString();
+		AppendOriginString();
+
+		m_WhatBuffer = m_StringBuffer.str();
+	}
+
+	void CTMHResultException::AppendErrorString() const noexcept
+	{
+		m_StringBuffer << "[Error Code] " << m_HResult << '\n' << "[Error Message] " << TranslateHResult(m_HResult);
+	}
+
+	HRESULT CTMHResultException::GetHResult() const noexcept
 	{
 		return m_HResult;
 	}
 
-	std::string CTMWindowException::TranslateErrorCode(HRESULT result)
+	std::string CTMHResultException::TranslateHResult(HRESULT hResult) noexcept
 	{
 		char* pMsgBuf = nullptr;
-		DWORD nMsgLength = FormatMessage(
+		DWORD msgLength = FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr,
-			result,
+			hResult,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 			reinterpret_cast<LPSTR>(&pMsgBuf),
 			0,
 			nullptr
 		);
 
-		if (nMsgLength == 0)
+		if (msgLength == 0 || pMsgBuf == nullptr)
 			return "Unidentified error code.";
 
 		std::string errorString = pMsgBuf;
 		LocalFree(pMsgBuf);
 		return errorString;
+	}
+	#pragma endregion
+
+	#pragma region CTMWindowException
+	CTMWindowException::CTMWindowException(unsigned int line, const char* file, HRESULT hResult) noexcept
+		: CTMHResultException(line, file, hResult)
+	{
+	}
+
+	const char* CTMWindowException::GetType() const noexcept
+	{
+		return "CTMWindowException";
+	}
+	#pragma endregion
+
+	#pragma region CTMDirectXException
+	CTMDirectXException::CTMDirectXException(unsigned int line, const char* file, HRESULT hResult, const std::vector<std::string>& infoMessages) noexcept
+		: CTMHResultException(line, file, hResult)
+	{
+		std::ostringstream oss;
+		for (const std::string& message : infoMessages)
+			oss << message << '\n';
+
+		m_ErrorInfo = oss.str();
+	}
+
+	void CTMDirectXException::DefineWhatMessage() const noexcept
+	{
+		m_StringBuffer << GetType() << '\n';
+
+		AppendErrorString();
+		AppendErrorInfo();
+		AppendOriginString();
+
+		m_WhatBuffer = m_StringBuffer.str();
+	}
+
+	void CTMDirectXException::AppendErrorInfo() const noexcept
+	{
+		m_StringBuffer << "[Debug Info] " << m_ErrorInfo;
+	}
+
+	const char* CTMDirectXException::GetType() const noexcept
+	{
+		return "CTMDirectXException";
+	}
+	#pragma endregion
+
+	#pragma region CTMDeviceRemovedException
+	CTMDeviceRemovedException::CTMDeviceRemovedException(unsigned int line, const char* file, HRESULT hResult) noexcept
+		: CTMHResultException(line, file, hResult)
+	{
+	}
+
+	const char* CTMDeviceRemovedException::GetType() const noexcept
+	{
+		return "CTMDeviceRemovedException";
 	}
 	#pragma endregion
 }

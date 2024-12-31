@@ -54,7 +54,11 @@ namespace CTM // (stands for custom)
         if (m_WndHandle == nullptr)
             THROW_CTM_WINDOW_EX_LAST;
 
-        // Show the window.
+        m_Graphics = std::make_unique<CTMGraphics>(m_WndHandle);
+
+        m_IsWindowInitialized = true;
+
+        // Show the window by default.
         ShowWindow(m_WndHandle, SW_SHOW);
     }
 
@@ -64,6 +68,11 @@ namespace CTM // (stands for custom)
 	}
 
     #pragma region Getters
+    bool CTMWindow::IsWindowInitialized() const noexcept
+    {
+        return m_IsWindowInitialized;
+    }
+
 	const char* CTMWindow::GetWndClass() noexcept
 	{
 		return m_WndClass;
@@ -78,11 +87,21 @@ namespace CTM // (stands for custom)
     {
         return m_WndInstance;
     }
+
+    const std::unique_ptr<CTMGraphics>& CTMWindow::GetGraphics() const noexcept
+    {
+        return m_Graphics;
+    }
 	
 	HWND CTMWindow::GetWndHandle() noexcept
 	{
 		return m_WndHandle;
 	}
+
+    const CTMKeyboard& CTMWindow::GetKeyboard() const noexcept
+    {
+        return m_Keyboard;
+    }
     #pragma endregion
 
     #pragma region API Callbacks

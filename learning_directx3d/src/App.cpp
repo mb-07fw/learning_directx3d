@@ -9,55 +9,70 @@ namespace CTM // (stands for custom)
 
     }
 
-    int CTMApp::Start()
+    WPARAM CTMApp::Start()
     {
-        try
+        if (!m_Window.IsWindowInitialized())
+            exit(-1);
+
+        MSG msg;
+        BOOL result;
+
+        MillisDuration frameStartTime;
+        MillisDuration remainingTime;
+
+        m_Timer.StartTimer();
+
+        while ((result = PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) >= 0)
         {
-            // "Message Pump"
-            MSG msg;
-            BOOL result;
+            // Break the loop if the message indicates a closure.
+            if (msg.message == WM_QUIT)
+                break;
 
-            m_Timer.StartTimer();
+            frameStartTime = m_Timer.ElapsedDuration();
 
-            while ((result = GetMessage(&msg, nullptr, 0, 0)) > 0)
-            {
-                // Translate raw virtual-key messages into character messages.
-                TranslateMessage(&msg);
+            // Translate raw virtual-key messages into character messages.
+            TranslateMessage(&msg);
 
-                // Forward the message to the current window procedure.
-                DispatchMessage(&msg);
+            // Forward the message to the current window procedure.
+            DispatchMessage(&msg);
 
-                Tick();
+            // Tick the app's frame.
+            Tick();
 
-                /*if (m_Keyboard.KeyIsPressed(VK_SPACE))
-                    MessageBox(nullptr, "Somethan happon!", "Space Key Pressed!", MB_ICONEXCLAMATION);
-                else if (m_Keyboard.KeyIsPressed(VK_MENU))
-                    MessageBox(nullptr, "Somethan happon!", "Alt Key Pressed!", MB_ICONEXCLAMATION);*/
-            }
+            // Calculate delta and remaining time for the frame.
+            m_DeltaTime = m_Timer.ElapsedDuration() - frameStartTime;
 
-            m_Timer.EndTimer();
+            // Calculate remaining time.
+            remainingTime = SM_TARGET_FRAME_DURATION - m_DeltaTime;
 
-            if (result == -1)
-                return result;
-            else
-                return msg.wParam;
+            if (remainingTime.count() < 0)
+                continue;
+                
+            // Sleep for the remaining frame duration.
+            std::this_thread::sleep_for(remainingTime);
         }
-        catch (const CTM::CTMException& ex)
-        {
-            MessageBox(nullptr, ex.what(), ex.GetType(), MB_OK | MB_ICONERROR);
-        }
-        catch (const std::exception& ex)
-        {
-            MessageBox(nullptr, ex.what(), "Standard exception.", MB_OK | MB_ICONERROR);
-        }
-        catch (...)
-        {
-            MessageBox(nullptr, "No details available.", "Unknown Exception", MB_OK | MB_ICONERROR);
-        }
+
+        m_Timer.EndTimer();
+
+        if (result == -1)
+            return result;
+        else
+            return msg.wParam;
     }
 
     void CTMApp::Tick()
     {
-        SetWindowText(m_Window.GetWndHandle(), ("Elapsed : " + std::to_string(m_Timer.ElapsedSeconds())).c_str());
+        const std::unique_ptr<CTMGraphics>& graphics = m_Window.GetGraphics();
+
+        graphics->ClearBuffer(0, 0, 0);
+
+        graphics->DrawTestTriangle();
+
+        graphics->EndFrame();
+
+        /*if (m_Window.GetKeyboard().KeyIsPressed(VK_SPACE))
+                    MessageBox(nullptr, "Somethan happon!", "Space Key Pressed!", MB_ICONEXCLAMATION);
+        else if (m_Window.GetKeyboard().KeyIsPressed(VK_MENU))
+            MessageBox(nullptr, "Somethan happon!", "Alt Key Pressed!", MB_ICONEXCLAMATION);*/
     }
 }

@@ -41,12 +41,16 @@
 
 #define STRICT
 
-#include <functional>
 #include <sstream>
 #include <exception>
 #include <string>
-#include <queue>
 #include <bitset>
+#include <chrono>
+#include <thread>
+#include <memory>
 
 #include <Windows.h>
 #include <windowsx.h>
+#include <d3d11.h>
+#include <dxgidebug.h>
+#include <wrl.h>

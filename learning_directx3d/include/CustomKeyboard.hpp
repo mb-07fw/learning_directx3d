@@ -50,14 +50,14 @@ namespace CTM // (stands for custom)
 		[[nodiscard]] const std::string& GetCharBuffer() noexcept;
 	private:
 		// A static constant representing the number of keyCodes that are tracked in the bitset m_KeyStates.
-		static constexpr unsigned int s_MaxKeys = 256u;
+		static constexpr unsigned int SM_MAX_KEYS = 256u;
 		
 		// A basic boolean flag representing the auto-repeating of text.
 		bool m_AutoRepeatEnabled = true;
 
 		// An std::bitset that represents each key code as true for pressed, or false if released or not pressed.
 		// Each key is indexed into by it's key code.
-		std::bitset<s_MaxKeys> m_KeyStates;
+		std::bitset<SM_MAX_KEYS> m_KeyStates;
 		
 		// A standard buffer for collected keys. Appended to in OnChar.
 		std::string m_CharBuffer;
