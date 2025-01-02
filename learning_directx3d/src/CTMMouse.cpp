@@ -1,5 +1,5 @@
 #include <pch.hpp>
-#include <CustomMouse.hpp>
+#include <CTMMouse.hpp>
 
 namespace CTM // (stands for custom)
 {

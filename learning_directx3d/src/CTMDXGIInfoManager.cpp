@@ -1,6 +1,7 @@
 #include <pch.hpp>
-#include <CustomException.hpp>
-#include <CustomDXGIInfoManager.hpp>
+#include <CTMException.hpp>
+#include <CTMExceptionMacros.hpp>
+#include <CTMDXGIInfoManager.hpp>
 
 namespace CTM // (stands for custom)
 {

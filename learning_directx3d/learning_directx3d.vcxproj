@@ -175,15 +175,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\CustomDXGIInfoManager.hpp" />
-    <ClCompile Include="src\CustomDXGIInfoManager.cpp" />
-    <ClCompile Include="src\CustomGraphics.cpp" />
-    <ClCompile Include="src\CustomApp.cpp" />
-    <ClCompile Include="src\CustomMouse.cpp" />
-    <ClCompile Include="src\CustomException.cpp" />
-    <ClCompile Include="src\CustomTimer.cpp" />
-    <ClCompile Include="src\CustomWindow.cpp" />
-    <ClCompile Include="src\CustomKeyboard.cpp" />
+    <ClInclude Include="include\CTMBindable.hpp" />
+    <ClInclude Include="include\CTMDXGIInfoManager.hpp" />
+    <ClInclude Include="include\CTMGeometry.hpp" />
+    <ClCompile Include="src\CTMBindable.cpp" />
+    <ClCompile Include="src\CTMDXGIInfoManager.cpp" />
+    <ClCompile Include="src\CTMGraphics.cpp" />
+    <ClCompile Include="src\CTMApp.cpp" />
+    <ClCompile Include="src\CTMMouse.cpp" />
+    <ClCompile Include="src\CTMException.cpp" />
+    <ClCompile Include="src\CTMTimer.cpp" />
+    <ClCompile Include="src\CTMWindow.cpp" />
+    <ClCompile Include="src\CTMKeyboard.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -193,13 +196,15 @@
     <ClCompile Include="src\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\CustomApp.hpp" />
-    <ClInclude Include="include\CustomException.hpp" />
-    <ClInclude Include="include\CustomGraphics.hpp" />
-    <ClInclude Include="include\CustomMouse.hpp" />
-    <ClInclude Include="include\CustomTimer.hpp" />
-    <ClInclude Include="include\CustomWindow.hpp" />
-    <ClInclude Include="include\CustomKeyboard.hpp" />
+    <ClInclude Include="include\CTMApp.hpp" />
+    <ClInclude Include="include\CTMException.hpp" />
+    <ClInclude Include="include\CTMExceptionMacros.hpp" />
+    <ClInclude Include="include\CTMGraphics.hpp" />
+    <ClInclude Include="include\CTMMouse.hpp" />
+    <ClInclude Include="include\CTMTimer.hpp" />
+    <ClInclude Include="include\CTMWindow.hpp" />
+    <ClInclude Include="include\CTMKeyboard.hpp" />
+    <ClInclude Include="include\CTMWindowAttributes.hpp" />
     <ClInclude Include="include\pch.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,14 @@
 #include <pch.hpp>
-#include <CustomApp.hpp>
+#include <CTMApp.hpp>
+
+#ifdef _DEBUG
+
+#define E
+
+#else
+
+#define F
+#endif
 
 namespace CTM // (stands for custom)
 {
@@ -80,6 +89,12 @@ namespace CTM // (stands for custom)
 
         graphics->ClearBuffer(0, 0, 0);
 
+        /*graphics->DrawTestTriangle(
+            -elapsed,
+            0.0f,
+            0.0f
+        );*/
+        
         graphics->DrawTestTriangle(
             elapsed,
             normMx,

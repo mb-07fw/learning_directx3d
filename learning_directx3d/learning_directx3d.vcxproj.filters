@@ -21,28 +21,31 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomWindow.cpp">
+    <ClCompile Include="src\CTMWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomException.cpp">
+    <ClCompile Include="src\CTMException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomKeyboard.cpp">
+    <ClCompile Include="src\CTMKeyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomMouse.cpp">
+    <ClCompile Include="src\CTMMouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomApp.cpp">
+    <ClCompile Include="src\CTMApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomTimer.cpp">
+    <ClCompile Include="src\CTMTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomGraphics.cpp">
+    <ClCompile Include="src\CTMGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CustomDXGIInfoManager.cpp">
+    <ClCompile Include="src\CTMDXGIInfoManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTMBindable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,28 +53,40 @@
     <ClInclude Include="include\pch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomWindow.hpp">
+    <ClInclude Include="include\CTMWindow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomException.hpp">
+    <ClInclude Include="include\CTMException.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomKeyboard.hpp">
+    <ClInclude Include="include\CTMKeyboard.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomMouse.hpp">
+    <ClInclude Include="include\CTMMouse.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomApp.hpp">
+    <ClInclude Include="include\CTMApp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomTimer.hpp">
+    <ClInclude Include="include\CTMTimer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomGraphics.hpp">
+    <ClInclude Include="include\CTMGraphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\CustomDXGIInfoManager.hpp">
+    <ClInclude Include="include\CTMDXGIInfoManager.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTMWindowAttributes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTMExceptionMacros.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTMBindable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTMGeometry.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,15 +1,22 @@
 #pragma once
 
 #include <pch.hpp>
-#include <CustomException.hpp>
-#include <CustomDXGIInfoManager.hpp>
+#include <CTMWindowAttributes.hpp>
+#include <CTMException.hpp>
+#include <CTMExceptionMacros.hpp>
+#include <CTMDXGIInfoManager.hpp>
 
 namespace CTM // (stands for custom)
 {
+	class CTMGraphicsInterface
+	{
+
+	};
+
 	class CTMGraphics
 	{
 	public:
-		CTMGraphics(HWND hWnd);
+		CTMGraphics(HWND hWnd, const WindowSpace& windowSpaceRef);
 		~CTMGraphics() = default;
 		CTMGraphics(const CTMGraphics&) = delete;
 		CTMGraphics& operator=(const CTMGraphics&) = delete;
@@ -17,7 +24,7 @@ namespace CTM // (stands for custom)
 	public:
 		void EndFrame();
 		void ClearBuffer(float red, float green, float blue) noexcept;
-		inline void DrawTestTriangle(float angle, float x, float y)
+		inline void DrawTestTriangle(float angle, float x, float z)
 		{
 			// TODO : Move all non-drawing stuff outside of this function, as they all get allocated every single tick.
 			// 1. Create the buffers.
@@ -27,7 +34,6 @@ namespace CTM // (stands for custom)
 			// 5. Draw.
 
 			HRESULT hResult;
-
 
 			struct Vertex
 			{
@@ -54,25 +60,24 @@ namespace CTM // (stands for custom)
 			//	3, 4, 5
 			//};
 
+			const unsigned short indices[] = {
+				0, 2, 1,	2, 3, 1,
+				1, 3, 5,	3, 7, 5,
+				2, 6, 3,	3, 6, 7,
+				4, 5, 7,	7, 6, 4,
+				0, 4, 2,	2, 4, 6,
+				0, 1, 4,	1, 5, 4
+			};
+
 			const Vertex vertices[] = {
 				{ -1.0f, -1.0f, -1.0f },
 				{  1.0f, -1.0f, -1.0f },
 				{ -1.0f,  1.0f, -1.0f },
 				{  1.0f,  1.0f, -1.0f },
-
 				{ -1.0f, -1.0f,  1.0f },
 				{  1.0f, -1.0f,  1.0f },
 				{ -1.0f,  1.0f,  1.0f },
 				{  1.0f,  1.0f,  1.0f }
-			};
-
-			const unsigned short indices[] = {
-				0, 2, 1,	2, 3, 1,
-				1, 3, 5,	3, 7, 5,
-				2, 6, 3,	3, 6, 7,
-				4, 5, 7,	4, 7, 6,
-				0, 4, 2,	2, 4, 6,
-				0, 1, 4,	1, 5, 4
 			};
 
 			const UINT vertexStride = sizeof(Vertex);
@@ -101,6 +106,7 @@ namespace CTM // (stands for custom)
 			// Bind the vertex buffer.
 			mP_Context->IASetVertexBuffers(0, 1, pVertexBuffer.GetAddressOf(), &vertexStride, &vertexOffset);
 
+			// Create the index buffer desc.
 			Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
 			D3D11_BUFFER_DESC indexBufferDesc = {};
 			indexBufferDesc.ByteWidth = sizeof(indices);
@@ -110,14 +116,17 @@ namespace CTM // (stands for custom)
 			indexBufferDesc.MiscFlags = 0;
 			indexBufferDesc.StructureByteStride = sizeof(short);
 
+			// Create the index buffer's sub data.
 			D3D11_SUBRESOURCE_DATA indexBufferSubData;
 			indexBufferSubData.pSysMem = indices;
 
+			// Create the index buffer.
 			GFX_IF_FUNC_FAILED_THROW_CTM_DIRECTX_EX(
 				hResult,
 				mP_Device->CreateBuffer(&indexBufferDesc, &indexBufferSubData, pIndexBuffer.GetAddressOf())
 			);
 
+			// Bind the index buffer.
 			mP_Context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 			struct ConstantBuffer1
@@ -138,7 +147,7 @@ namespace CTM // (stands for custom)
 					DirectX::XMMatrixTranspose(
 						DirectX::XMMatrixRotationZ(angle) *
 						DirectX::XMMatrixRotationX(angle) *
-						DirectX::XMMatrixTranslation(x, y, 4.0f) *
+						DirectX::XMMatrixTranslation(x, 0.0f, z + 4.0f) *
 						DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
 					)
 				}
@@ -198,7 +207,8 @@ namespace CTM // (stands for custom)
 			Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
 
 			// Read the bytecode of the compiled shader into a blob.
-			GFX_IF_FUNC_CAUSES_ERROR_THROW_CTM_INFO_EX(
+			GFX_IF_FUNC_FAILED_THROW_CTM_DIRECTX_EX(
+				hResult,
 				D3DReadFileToBlob(L"PixelShader.cso", &pBlob)
 			);
 
@@ -215,7 +225,8 @@ namespace CTM // (stands for custom)
 			Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 
 			// Read the bytecode of the compiled shader into a blob.
-			GFX_IF_FUNC_CAUSES_ERROR_THROW_CTM_INFO_EX(
+			GFX_IF_FUNC_FAILED_THROW_CTM_DIRECTX_EX(
+				hResult,
 				D3DReadFileToBlob(L"VertexShader.cso", &pBlob)
 			);
 
@@ -239,14 +250,15 @@ namespace CTM // (stands for custom)
 			mP_Context->IASetInputLayout(pInputLayout.Get());
 
 			// Bind the render target.
-			mP_Context->OMSetRenderTargets(1, mP_Target.GetAddressOf(), nullptr);
+			mP_Context->OMSetRenderTargets(1, mP_Target.GetAddressOf(), mP_DepthStencilView.Get());
 
 			// Set primitive topology to triangle list (group of 3 vertices)
 			mP_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 			// Configure the viewport.
 			D3D11_VIEWPORT viewport = {};
-			viewport.Width = 640;
-			viewport.Height = 480;
+			viewport.Width = (FLOAT)m_WindowSpaceRef.width;
+			viewport.Height = (FLOAT)m_WindowSpaceRef.height;
 			viewport.MinDepth = 0;
 			viewport.MaxDepth = 1;
 			viewport.TopLeftX = 0;
@@ -257,16 +269,18 @@ namespace CTM // (stands for custom)
 
 			// Draw the vertices.
 			GFX_IF_FUNC_CAUSES_ERROR_THROW_CTM_INFO_EX(
-				mP_Context->DrawIndexed((UINT)std::size(indices), 0, 0);
+				mP_Context->DrawIndexed((UINT)std::size(indices), 0, 0)
 			);
 		}
 	private:
 		static constexpr unsigned char SM_SYNC_INTERVAL = 1u;
 	private:
+		const WindowSpace& m_WindowSpaceRef;
 		CTMDXGIInfoManager m_InfoManager;
-		Microsoft::WRL::ComPtr<ID3D11Device> mP_Device = nullptr;
-		Microsoft::WRL::ComPtr<IDXGISwapChain> mP_Swap = nullptr;
+		Microsoft::WRL::ComPtr<ID3D11Device> mP_Device;
+		Microsoft::WRL::ComPtr<IDXGISwapChain> mP_Swap;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> mP_Context;
-		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mP_Target = nullptr;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mP_Target;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mP_DepthStencilView;
 	};
 }

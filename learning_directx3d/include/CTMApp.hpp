@@ -1,8 +1,8 @@
 #pragma once
 
-#include <CustomWindow.hpp>
-#include <CustomException.hpp>
-#include <CustomTimer.hpp>
+#include <CTMWindow.hpp>
+#include <CTMException.hpp>
+#include <CTMTimer.hpp>
 
 namespace CTM // (stands for custom)
 {

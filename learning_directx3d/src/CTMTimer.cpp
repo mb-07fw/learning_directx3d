@@ -1,5 +1,5 @@
 #include <pch.hpp>
-#include <CustomTimer.hpp>
+#include <CTMTimer.hpp>
 
 namespace CTM // (stands for custom)
 {

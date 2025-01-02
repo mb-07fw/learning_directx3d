@@ -1,12 +1,11 @@
 #include <pch.hpp>
-#include <CustomKeyboard.hpp>
+#include <CTMKeyboard.hpp>
 
 namespace CTM // (stands for custom)
 {
 	/*CTMKeyEvent::CTMKeyEvent(CTMKeyEventType type, unsigned char keyCode) noexcept
 		: m_Type(type), m_KeyCode(keyCode)
 	{
-
 	}*/
 
 	#pragma region CTMKeyboard

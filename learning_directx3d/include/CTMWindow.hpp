@@ -1,22 +1,13 @@
 #pragma once
 
 #include <pch.hpp>
-#include <CustomGraphics.hpp>
-#include <CustomKeyboard.hpp>
-#include <CustomMouse.hpp>
+#include <CTMWindowAttributes.hpp>
+#include <CTMGraphics.hpp>
+#include <CTMKeyboard.hpp>
+#include <CTMMouse.hpp>
 
 namespace CTM // (stands for custom)
 {
-	struct WindowSpace
-	{
-	public:
-		WindowSpace(int w, int h, float ar)
-			: width(w), height(h), aspectRatio(ar) {}
-	public:
-		int width, height;
-		float aspectRatio;
-	};
-
 	class CTMWindow
 	{
 	public:

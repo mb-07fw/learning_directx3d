@@ -36,8 +36,13 @@
 #define NOPROXYSTUB
 #define NOIMAGE
 #define NOTAPE
-
 #define STRICT
+
+#ifdef _DEBUG
+#define IS_DEBUG 1
+#else
+#define IS_DEBUG 0
+#endif
 
 #include <sstream>
 #include <exception>

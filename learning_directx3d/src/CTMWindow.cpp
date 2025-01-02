@@ -1,6 +1,6 @@
 ﻿#include <pch.hpp>
-#include <CustomWindow.hpp>
-#include <CustomException.hpp>
+#include <CTMWindow.hpp>
+#include <CTMException.hpp>
 
 namespace CTM // (stands for custom)
 {
@@ -56,7 +56,7 @@ namespace CTM // (stands for custom)
         if (m_WndHandle == nullptr)
             THROW_CTM_WINDOW_EX_LAST;
 
-        m_Graphics = std::make_unique<CTMGraphics>(m_WndHandle);
+        m_Graphics = std::make_unique<CTMGraphics>(m_WndHandle, m_WindowSpace);
 
         m_IsWindowInitialized = true;
 
