@@ -4,7 +4,7 @@
 namespace CTM // (stands for custom)
 {
 	#pragma region CTMException
-	CTMException::CTMException(unsigned int line, const char* file) noexcept
+	CTMException::CTMException(unsigned int line, const char* file)
 		: m_Line(line), m_File(file) 
 	{
 	}
@@ -13,10 +13,10 @@ namespace CTM // (stands for custom)
 	{
 		if (!m_DefinedWhat)
 		{
-			ClearStringBuffer();
+			std::ostringstream oss;
+			DefineWhatMessage(oss);
 
-			DefineWhatMessage();
-
+			m_WhatBuffer = oss.str();
 			m_DefinedWhat = true;
 		}
 
@@ -33,19 +33,19 @@ namespace CTM // (stands for custom)
 		return m_Line;
 	}
 
-	void CTMException::AppendOriginString() const noexcept
+	void CTMException::AppendTypeString(std::ostringstream& oss) const
 	{
-		m_StringBuffer << "[File] " << m_File << '\n' << "[Line] " << m_Line;
+		oss << GetType() << '\n';
 	}
 
-	void CTMException::ClearStringBuffer() const noexcept
+	void CTMException::AppendOriginString(std::ostringstream& oss) const
 	{
-		m_StringBuffer.str("");
+		oss << "[File] " << m_File << '\n' << "[Line] " << m_Line;
 	}
 	#pragma endregion
 
 	#pragma region CTMInfoException
-	CTMInfoException::CTMInfoException(unsigned int line, const char* file, const std::vector<std::string>& infoMessages) noexcept
+	CTMInfoException::CTMInfoException(unsigned int line, const char* file, const std::vector<std::string>& infoMessages)
 		: CTMException(line, file)
 	{
 		std::ostringstream oss;
@@ -60,41 +60,28 @@ namespace CTM // (stands for custom)
 		return "CTMInfoException";
 	}
 
-	void CTMInfoException::DefineWhatMessage() const noexcept
+	void CTMInfoException::DefineWhatMessage(std::ostringstream& oss) const
 	{
-		m_StringBuffer << GetType() << '\n';
-
-		AppendErrorInfo();
-		AppendOriginString();
-
-		m_WhatBuffer = m_StringBuffer.str();
+		AppendTypeString(oss);
+		AppendErrorInfo(oss);
+		AppendOriginString(oss);
 	}
 
-	void CTMInfoException::AppendErrorInfo() const noexcept
+	void CTMInfoException::AppendErrorInfo(std::ostringstream& oss) const
 	{
-		m_StringBuffer << "[Debug Info] " << m_ErrorInfo;
+		oss << "[Debug Info] " << m_ErrorInfo;
 	}
 	#pragma endregion
 
 	#pragma region HResultException
-	CTMHResultException::CTMHResultException(unsigned int line, const char* file, HRESULT hResult) noexcept
+	CTMHResultException::CTMHResultException(unsigned int line, const char* file, HRESULT hResult)
 		: CTMException(line, file), m_HResult(hResult)
 	{
 	}
 
-	void CTMHResultException::DefineWhatMessage() const noexcept
+	void CTMHResultException::AppendErrorString(std::ostringstream& oss) const
 	{
-		m_StringBuffer << GetType() << '\n';
-
-		AppendErrorString();
-		AppendOriginString();
-
-		m_WhatBuffer = m_StringBuffer.str();
-	}
-
-	void CTMHResultException::AppendErrorString() const noexcept
-	{
-		m_StringBuffer << "[Error Code] " << m_HResult << '\n' << "[Error Message] " << TranslateHResult(m_HResult);
+		oss << "[Error Code] " << m_HResult << '\n' << "[Error Message] " << TranslateHResult(m_HResult);
 	}
 
 	HRESULT CTMHResultException::GetHResult() const noexcept
@@ -102,7 +89,14 @@ namespace CTM // (stands for custom)
 		return m_HResult;
 	}
 
-	std::string CTMHResultException::TranslateHResult(HRESULT hResult) noexcept
+	void CTMHResultException::DefineWhatMessage(std::ostringstream& oss) const
+	{
+		AppendTypeString(oss);
+		AppendErrorString(oss);
+		AppendOriginString(oss);
+	}
+
+	std::string CTMHResultException::TranslateHResult(HRESULT hResult) const
 	{
 		char* pMsgBuf = nullptr;
 		DWORD msgLength = FormatMessage(
@@ -119,13 +113,15 @@ namespace CTM // (stands for custom)
 			return "Unidentified error code.";
 
 		std::string errorString = pMsgBuf;
+
 		LocalFree(pMsgBuf);
+
 		return errorString;
 	}
 	#pragma endregion
 
 	#pragma region CTMWindowException
-	CTMWindowException::CTMWindowException(unsigned int line, const char* file, HRESULT hResult) noexcept
+	CTMWindowException::CTMWindowException(unsigned int line, const char* file, HRESULT hResult)
 		: CTMHResultException(line, file, hResult)
 	{
 	}
@@ -137,7 +133,7 @@ namespace CTM // (stands for custom)
 	#pragma endregion
 
 	#pragma region CTMDirectXException
-	CTMDirectXException::CTMDirectXException(unsigned int line, const char* file, HRESULT hResult, const std::vector<std::string>& infoMessages) noexcept
+	CTMDirectXException::CTMDirectXException(unsigned int line, const char* file, HRESULT hResult, const std::vector<std::string>& infoMessages)
 		: CTMHResultException(line, file, hResult)
 	{
 		std::ostringstream oss;
@@ -147,30 +143,27 @@ namespace CTM // (stands for custom)
 		m_ErrorInfo = oss.str();
 	}
 
-	void CTMDirectXException::DefineWhatMessage() const noexcept
-	{
-		m_StringBuffer << GetType() << '\n';
-
-		AppendErrorString();
-		AppendErrorInfo();
-		AppendOriginString();
-
-		m_WhatBuffer = m_StringBuffer.str();
-	}
-
-	void CTMDirectXException::AppendErrorInfo() const noexcept
-	{
-		m_StringBuffer << "[Debug Info] " << m_ErrorInfo;
-	}
-
 	const char* CTMDirectXException::GetType() const noexcept
 	{
 		return "CTMDirectXException";
 	}
+
+	void CTMDirectXException::DefineWhatMessage(std::ostringstream& oss) const
+	{
+		AppendTypeString(oss);
+		AppendErrorString(oss);
+		AppendErrorInfo(oss);
+		AppendOriginString(oss);
+	}
+
+	void CTMDirectXException::AppendErrorInfo(std::ostringstream& oss) const
+	{
+		oss << "[Debug Info] " << m_ErrorInfo;
+	}
 	#pragma endregion
 
 	#pragma region CTMDeviceRemovedException
-	CTMDeviceRemovedException::CTMDeviceRemovedException(unsigned int line, const char* file, HRESULT hResult) noexcept
+	CTMDeviceRemovedException::CTMDeviceRemovedException(unsigned int line, const char* file, HRESULT hResult)
 		: CTMHResultException(line, file, hResult)
 	{
 	}

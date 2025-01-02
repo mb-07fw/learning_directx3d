@@ -1,10 +1,11 @@
 #include <pch.hpp>
-#include <App.hpp>
+#include <CustomApp.hpp>
 
 namespace CTM // (stands for custom)
 {
     CTMApp::CTMApp()
-        : m_Window(640, 480, "directx_test", "Direct3D Engine")
+        : m_DeltaTime(), m_Window(640, 480, "directx_test", "Direct3D Engine"), 
+          m_Timer()
     {
 
     }
@@ -63,10 +64,27 @@ namespace CTM // (stands for custom)
     void CTMApp::Tick()
     {
         const std::unique_ptr<CTMGraphics>& graphics = m_Window.GetGraphics();
+        const WindowSpace& windowSpace = m_Window.GetWindowSpace();
+        const CTMMouse& mouse = m_Window.GetMouse();
+
+        float mX = (float)mouse.GetCurrentX();
+        float mY = (float)mouse.GetCurrentY();
+
+        float normMx = mX / (windowSpace.width / 2) - 1.0f;
+        float normMy = -mY / (windowSpace.height / 2) + 1.0f;
+
+        float elapsed = (float)m_Timer.ElapsedSeconds();
+
+        //SetWindowText(m_Window.GetWndHandle(), ("Norm | (" + std::to_string(normMx) + ", " + std::to_string(normMy)).c_str());
+        //SetWindowText(m_Window.GetWndHandle(), std::to_string(elapsed).c_str());
 
         graphics->ClearBuffer(0, 0, 0);
 
-        graphics->DrawTestTriangle();
+        graphics->DrawTestTriangle(
+            elapsed,
+            normMx,
+            normMy
+        );
 
         graphics->EndFrame();
 

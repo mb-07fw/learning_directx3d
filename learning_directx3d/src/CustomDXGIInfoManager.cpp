@@ -1,6 +1,6 @@
 #include <pch.hpp>
-#include <CustomDXGIInfoManager.hpp>
 #include <CustomException.hpp>
+#include <CustomDXGIInfoManager.hpp>
 
 namespace CTM // (stands for custom)
 {

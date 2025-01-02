@@ -19,6 +19,16 @@ namespace CTM // (stands for custom)
 		m_CurrentY = y;
 	}
 
+	int CTMMouse::GetCurrentX() const noexcept
+	{
+		return m_CurrentX;
+	}
+	
+	int CTMMouse::GetCurrentY() const noexcept
+	{
+		return m_CurrentY;
+	}
+
 	std::string CTMMouse::GetPosAsStr() const noexcept
 	{
 		return '(' + std::to_string(m_CurrentX) + ", " + std::to_string(m_CurrentY) + ')';

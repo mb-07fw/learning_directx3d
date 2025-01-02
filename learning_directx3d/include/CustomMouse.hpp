@@ -26,7 +26,9 @@ namespace CTM // (Stands for custom)
 		void SetCurrentX(int x) noexcept;
 		void SetCurrentY(int y) noexcept;
 		void SetCurrentPoint(int x, int y) noexcept;
-		std::string GetPosAsStr() const noexcept;
+		[[nodiscard]] int GetCurrentX() const noexcept;
+		[[nodiscard]] int GetCurrentY() const noexcept;
+		[[nodiscard]] std::string GetPosAsStr() const noexcept;
 	private:
 		int m_CurrentX;
 		int m_CurrentY;

@@ -5,10 +5,12 @@
 namespace CTM // (stands for custom)
 {
     CTMWindow::CTMWindow(unsigned int width, unsigned int height, const char* wndClass, const char* wndTitle)
-        : m_WndClass(wndClass), m_WndTitle(wndTitle), m_WndInstance(GetModuleHandle(nullptr))
+        : m_IsWindowInitialized(false), m_WindowSpace(width, height, (float)width / height),
+          m_WndClass(wndClass), m_WndTitle(wndTitle), m_WndInstance(GetModuleHandle(nullptr)),
+          m_WndHandle(nullptr), m_Graphics(nullptr), m_Keyboard(), m_Mouse()
     {
         // Register the window class.
-        WNDCLASSEX wc = { 0 };
+        WNDCLASSEX wc = {};
 
         wc.cbSize = sizeof(wc);
         wc.style = CS_OWNDC;
@@ -73,6 +75,11 @@ namespace CTM // (stands for custom)
         return m_IsWindowInitialized;
     }
 
+    const WindowSpace& CTMWindow::GetWindowSpace() const noexcept
+    {
+        return m_WindowSpace;
+    }
+
 	const char* CTMWindow::GetWndClass() noexcept
 	{
 		return m_WndClass;
@@ -101,6 +108,11 @@ namespace CTM // (stands for custom)
     const CTMKeyboard& CTMWindow::GetKeyboard() const noexcept
     {
         return m_Keyboard;
+    }
+
+    const CTMMouse& CTMWindow::GetMouse() const noexcept
+    {
+        return m_Mouse;
     }
     #pragma endregion
 
@@ -145,8 +157,8 @@ namespace CTM // (stands for custom)
             //m_Keyboard.ResetKeyStates();
             break;
         case WM_MOUSEMOVE:
-            /*m_Mouse.SetCurrentPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-            SetWindowText(m_WndHandle, ("Mouse Pos : " + m_Mouse.GetPosAsStr()).c_str());*/
+            m_Mouse.SetCurrentPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            //SetWindowText(m_WndHandle, ("Mouse Pos : " + m_Mouse.GetPosAsStr()).c_str());
             break;
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:

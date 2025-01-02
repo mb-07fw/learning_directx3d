@@ -1,10 +1,9 @@
 ﻿#include <pch.hpp>
-#include <App.hpp>
+#include <CustomApp.hpp>
 
 /* Courtesy of ChiliTomatoNoodle's C++ 3D DirectX Tutorial (link -> https://www.youtube.com/playlist?list=PLqCJpWy5Fohd3S7ICFXwUomYW0Wv67pDD)
 *   
 *   Windows 101:
-* 
 *       1. Windows is about windows.
 *       2. Windows is about messages.
 */

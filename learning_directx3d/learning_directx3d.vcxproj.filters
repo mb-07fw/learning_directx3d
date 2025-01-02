@@ -33,16 +33,13 @@
     <ClCompile Include="src\CustomMouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\App.cpp">
+    <ClCompile Include="src\CustomApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\CustomTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\CustomGraphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\CustomDXGIInfoManager.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\CustomDXGIInfoManager.cpp">
@@ -65,7 +62,7 @@
     <ClInclude Include="include\CustomMouse.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\App.hpp">
+    <ClInclude Include="include\CustomApp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\CustomTimer.hpp">
@@ -74,5 +71,12 @@
     <ClInclude Include="include\CustomGraphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\CustomDXGIInfoManager.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="res\shaders\VertexShader.hlsl" />
+    <FxCompile Include="res\shaders\PixelShader.hlsl" />
   </ItemGroup>
 </Project>
