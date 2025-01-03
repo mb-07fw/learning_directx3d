@@ -131,7 +131,7 @@ namespace CTM // (stands for custom)
         SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 
         // Set message procedure to normal (non-setup) handler now that setup is finished.
-        SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&CTMWindow::HandleMsgThunk));
+        SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(CTMWindow::HandleMsgThunk));
 
         // Forward message to window class handler.
         return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
